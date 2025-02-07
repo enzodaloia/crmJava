@@ -1,0 +1,238 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prospect index{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+{% endblock %}
+{% block body %}
+    <div class="container mt-4">
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProspectModal">
+            <i class="fa fa-plus"></i>
+        </button>
+        <a href="" class="btn btn-success mb-3" data-bs-toggle="tooltip" data-placement="top" title="Export Excel prospects"><i class="fas fa-file-excel"></i></a> {#{{path('app_application_export_prospect')}}#}
+        <div class="modal fade" id="addProspectModal" tabindex="-1" aria-labelledby="addProspectModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="addProspectModalLabel">Ajouter un prospect</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addProspectForm" method="post" action="{{ path('app_new_prospect') }}">
+                            <div class="mb-3">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="nom" name="nom" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="prenom" class="form-label">Prenom</label>
+                                <input type="text" class="form-control" id="prenom" name="prenom" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="telephone" class="form-label">Téléphone</label>
+                                <input type="text" class="form-control" id="telephone" name="telephone" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mail" class="form-label">Mail</label>
+                                <input type="email" class="form-control" id="mail" name="mail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="niveauActuel" class="form-label">Niveau Actuel</label>
+                                <input type="text" class="form-control" id="niveauActuel" name="niveauActuel" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="diplomePrepare" class="form-label">Diplôme Préparé</label>
+                                <input type="text" class="form-control" id="diplomePrepare" name="diplomePrepare" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="specialite" class="form-label">Spécialité</label>
+                                <input type="text" class="form-control" id="specialite" name="specialite" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="etablissement" class="form-label">Établissement</label>
+                                <input type="text" class="form-control" id="etablissement" name="etablissement" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="codePostal" class="form-label">Code Postal</label>
+                                <input type="text" class="form-control" id="codePostal" name="codePostal" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ville" class="form-label">Ville</label>
+                                <input type="text" class="form-control" id="ville" name="ville" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="anneeRecrutement" class="form-label">Année de Recrutement</label>
+                                <input type="number" class="form-control" id="anneeRecrutement" name="anneeRecrutement" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="entreeEn" class="form-label">Entrée en</label>
+                                <input type="text" class="form-control" id="entreeEn" name="entreeEn" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="commentaire" class="form-label">Commentaire</label>
+                                <textarea class="form-control" id="commentaire" name="commentaire" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="card-title">Prospects</h4>
+            </div>
+            <div class="card-body">
+                <table id="prospectTable" class="table table-striped table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>Mail</th>
+                            <th>Établissement</th>
+                            <th>Année de Recrutement</th>
+                            <th>Entrée en</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for prospect in prospects %}
+                        <tr>
+                            <td>{{ prospect.nom }}</td>
+                            <td>{{ prospect.prenom }}</td>
+                            <td>{{ prospect.mail }}</td>
+                            <td>{{ prospect.etablissement }}</td>
+                            <td>{{ prospect.anneeRecrutement }}</td>
+                            <td>{{ prospect.entreeEn }}</td>
+                            <td>
+                                <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewProspectModal{{ prospect.id }}"><i class="fas fa-eye"></i></a>
+
+                                <div class="modal fade" id="viewProspectModal{{ prospect.id }}" tabindex="-1" aria-labelledby="viewProspectModalLabel{{ prospect.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title" id="viewProspectModalLabel{{ prospect.id }}">Détails du prospect</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p><strong>Nom:</strong> {{ prospect.nom }}</p>
+                                                <p><strong>Prénom:</strong> {{ prospect.prenom }}</p>
+                                                <p><strong>Téléphone:</strong> {{ prospect.telephone }}</p>
+                                                <p><strong>Mail:</strong> {{ prospect.mail }}</p>
+                                                <p><strong>Niveau Actuel:</strong> {{ prospect.niveauActuel }}</p>
+                                                <p><strong>Diplôme Préparé:</strong> {{ prospect.diplomePrepare }}</p>
+                                                <p><strong>Spécialité:</strong> {{ prospect.specialite }}</p>
+                                                <p><strong>Établissement:</strong> {{ prospect.etablissement }}</p>
+                                                <p><strong>Code Postal:</strong> {{ prospect.codePostal }}</p>
+                                                <p><strong>Ville:</strong> {{ prospect.ville }}</p>
+                                                <p><strong>Année de Recrutement:</strong> {{ prospect.anneeRecrutement }}</p>
+                                                <p><strong>Entrée en:</strong> {{ prospect.entreeEn }}</p>
+                                                <p><strong>Commentaire:</strong> {{ prospect.commentaire }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProspectModal{{ prospect.id }}"><i class="fas fa-edit"></i></a>
+
+                                <div class="modal fade" id="editProspectModal{{ prospect.id }}" tabindex="-1" aria-labelledby="editProspectModalLabel{{ prospect.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-warning text-white">
+                                                <h5 class="modal-title" id="editProspectModalLabel{{ prospect.id }}">Modifier le prospect</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="editProspectForm{{ prospect.id }}" method="post" action="{{ path('app_edit_prospect', {'id': prospect.id}) }}">
+                                                    <div class="mb-3">
+                                                        <label for="nom{{ prospect.id }}" class="form-label">Nom</label>
+                                                        <input type="text" class="form-control" id="nom{{ prospect.id }}" name="nom" value="{{ prospect.nom }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="prenom{{ prospect.id }}" class="form-label">Prenom</label>
+                                                        <input type="text" class="form-control" id="prenom{{ prospect.id }}" name="prenom" value="{{ prospect.prenom }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="telephone{{ prospect.id }}" class="form-label">Téléphone</label>
+                                                        <input type="text" class="form-control" id="telephone{{ prospect.id }}" name="telephone" value="{{ prospect.telephone }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="mail{{ prospect.id }}" class="form-label">Mail</label>
+                                                        <input type="email" class="form-control" id="mail{{ prospect.id }}" name="mail" value="{{ prospect.mail }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="niveauActuel{{ prospect.id }}" class="form-label">Niveau Actuel</label>
+                                                        <input type="text" class="form-control" id="niveauActuel{{ prospect.id }}" name="niveauActuel" value="{{ prospect.niveauActuel }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="diplomePrepare{{ prospect.id }}" class="form-label">Diplôme Préparé</label>
+                                                        <input type="text" class="form-control" id="diplomePrepare{{ prospect.id }}" name="diplomePrepare" value="{{ prospect.diplomePrepare }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="specialite{{ prospect.id }}" class="form-label">Spécialité</label>
+                                                        <input type="text" class="form-control" id="specialite{{ prospect.id }}" name="specialite" value="{{ prospect.specialite }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="etablissement{{ prospect.id }}" class="form-label">Établissement</label>
+                                                        <input type="text" class="form-control" id="etablissement{{ prospect.id }}" name="etablissement" value="{{ prospect.etablissement }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="codePostal{{ prospect.id }}" class="form-label">Code Postal</label>
+                                                        <input type="text" class="form-control" id="codePostal{{ prospect.id }}" name="codePostal" value="{{ prospect.codePostal }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="ville{{ prospect.id }}" class="form-label">Ville</label>
+                                                        <input type="text" class="form-control" id="ville{{ prospect.id }}" name="ville" value="{{ prospect.ville }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="anneeRecrutement{{ prospect.id }}" class="form-label">Année de Recrutement</label>
+                                                        <input type="number" class="form-control" id="anneeRecrutement{{ prospect.id }}" name="anneeRecrutement" value="{{ prospect.anneeRecrutement }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="entreeEn{{ prospect.id }}" class="form-label">Entrée en</label>
+                                                        <input type="text" class="form-control" id="entreeEn{{ prospect.id }}" name="entreeEn" value="{{ prospect.entreeEn }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="commentaire{{ prospect.id }}" class="form-label">Commentaire</label>
+                                                        <textarea class="form-control" id="commentaire{{ prospect.id }}" name="commentaire" rows="3">{{ prospect.commentaire }}</textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Modifier</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{{ path('app_delete_prospect', {'id': prospect.id}) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="14">no records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    {# <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap5.min.js"></script> #}
+    <script>
+        $(document).ready(function() {
+            $('#prospectTable').DataTable({
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Tous"]
+                ],
+                responsive: true,
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.10.21/i18n/French.json"
+                }
+            });
+        });
+    </script>
+{% endblock %}
